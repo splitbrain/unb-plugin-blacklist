@@ -12,34 +12,8 @@ UnbPluginMeta('Check posts against a blacklist of regular expressions');
 UnbPluginMeta('Andreas Gohr <andi@splitbrain.org>', 'author');
 UnbPluginMeta('en', 'lang');
 UnbPluginMeta('unb.devel.20110527', 'version');
-UnbPluginMeta('plugin_blacklist_config', 'config');
 
 if (!UnbPluginEnabled()) return;
-
-
-function plugin_blacklist_config(&$data) {
-    global $UNB;
-
-    // setup config fields
-    if ($data['request'] == 'fields') {
-        $data['fields'][] = array(
-            'fieldtype'   => 'textarea',
-            'fieldname'   => 'blacklist_list',
-            'fieldvalue'  => @file_get_contents('blacklist-plugin.conf'),
-            'fieldlabel'  => 'blacklist config list label',
-            'fielddesc'   => 'blacklist config list desc',
-            'fieldcols'   => 80,
-            'fieldrows'   => 15,
-        );
-    }
-
-    // save config data
-    if ($data['request'] == 'handleform') {
-        $data['result'] = file_put_contents('blacklist-plugin.conf', $_POST['blacklist_list']);
-    }
-
-    return true;
-}
 
 function plugin_blacklist_hook(&$data) {
     global $UNB_T;
@@ -75,5 +49,44 @@ function plugin_blacklist_hook(&$data) {
     return true;
 }
 
+function plugin_blacklist_cp_category(&$data) {
+    if (!UnbCheckRights('is_admin')) return true;
+
+    $data[] = array(
+        'title' => 'blacklist label',
+        'link' => UnbLink('@cp', 'cat=blacklist', true),
+        'cpcat' => 'blacklist'
+    );
+
+    return true;
+}
+
+function plugin_blacklist_cp_category_page(&$data) {
+    global $UNB, $UNB_T;
+    $TP =& $UNB['TP'];
+    if ($data['cat'] != 'blacklist' || !UnbCheckRights('is_admin')) return true;
+
+    // save and load
+    if(isset($_POST['blacklist_list'])){
+        @file_put_contents('blacklist-plugin.conf', $_POST['blacklist_list']);
+    }
+    $blacklist = @file_get_contents('blacklist-plugin.conf');
+
+    // build form
+    ob_start();
+    echo '<form action="' . UnbLink('@this', 'cat=blacklist', true) . '" method="post">';
+    echo '<textarea name="blacklist_list" cols="80" rows="15">'.htmlspecialchars($blacklist).'</textarea><br />';
+    echo '<input type="submit" value="'.$UNB_T['blacklist save'].'">';
+    echo '</form>';
+
+    // setup control panel
+    $TP['controlpanelMoreCats'][] = 'controlpanel_generic.html';
+    $TP['GenericTitle'] = 'blacklist label';
+    $TP['GenericContent'] = ob_get_clean();
+    return true;
+}
+
 // Register hook functions
 UnbRegisterHook('post.verifyaccept', 'plugin_blacklist_hook');
+UnbRegisterHook('cp.addcategory', 'plugin_blacklist_cp_category');
+UnbRegisterHook('cp.categorypage', 'plugin_blacklist_cp_category_page');

@@ -7,21 +7,6 @@ This reuses the blacklisting mechanism of DokuWiki described here:
 https://www.dokuwiki.org/blacklist
 
 To install, copy the blacklist.* files into your unb_lib/plugins folder.
-Additionally the cp_box_textarea.html file has to be copied to
-unb_lib/designs/modern/tpl and you need to adjust your
-unb_lib/designs/modern/tpl/controlpanel_plugins.html:
-
-find the following (around line 92):
-
-    {elseif eq $fieldtype "text"}
-        {include "cp_box_text.html"}
-
-and add two lines like this:
-
-    {elseif eq $fieldtype "text"}
-        {include "cp_box_text.html"}
-    {elseif eq $fieldtype "textarea"}
-        {include "cp_box_textarea.html"}
 
 The settings are sotred in a blacklist-plugin.conf file at the top of your
 UNB install. Make sure that's writable.

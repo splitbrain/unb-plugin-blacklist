@@ -7,6 +7,6 @@
 // See this web page for information on how to edit this file:
 // http://newsboard.unclassified.de/devel/docs/translating
 
-$UNB_T['blacklist config list label'] = 'Blacklist';
-$UNB_T['blacklist config list desc'] = 'One regular expression per line';
+$UNB_T['blacklist label'] = 'Blacklist';
+$UNB_T['blacklist save'] = 'Save Blacklist';
 $UNB_T['blacklist block'] = 'Looks like you tried to spam, stop that!';
