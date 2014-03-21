@@ -1,0 +1,11 @@
+<div class="box">
+{tr $fieldlabel}
+</div>
+<div class="box indent">
+    <textarea name="{$fieldname}" cols="{$fieldcols}" rows="{$fieldrows}">{$fieldvalue}</textarea>
+</div>
+{if tr $fielddesc}
+<div class="box small indent">
+{tr $fielddesc}
+</div>
+{endif}
